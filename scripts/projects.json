@@ -1,0 +1,19 @@
+{
+  "projects": [
+    {
+      "name": "starter",
+      "path": "output/harness-starter",
+      "launch": "npm run dev"
+    },
+    {
+      "name": "h2048",
+      "path": "output/harness-2048",
+      "launch": "npm run dev"
+    },
+    {
+      "name": "hsnake",
+      "path": "output/harness-snake",
+      "launch": "npm run dev"
+    }
+  ]
+}
