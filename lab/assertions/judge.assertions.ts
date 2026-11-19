@@ -57,6 +57,15 @@ export const ASSERTIONS: Assertion[] = [
     name: "diagonal-win",
     run: (c) => expectStatus(c, [X, O, N, N, X, O, N, N, X], "x_win", "diagonal-win"), // x=3 o=2
   },
+  // J4 列线与反对角线（评审 round1 补：胜线须覆盖行/列/主对角/反对角四形态）
+  {
+    name: "x-column-win",
+    run: (c) => expectStatus(c, [X, O, N, X, O, N, X, N, N], "x_win", "x-column-win"), // x=3 o=2
+  },
+  {
+    name: "o-anti-diagonal-win",
+    run: (c) => expectStatus(c, [X, N, O, N, O, N, O, X, X], "o_win", "o-anti-diagonal-win"), // x=3 o=3
+  },
   // J7 终态
   {
     name: "draw",
