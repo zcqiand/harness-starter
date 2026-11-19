@@ -2,6 +2,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { cellGrid, createGame } from "../lib/engine";
+import type { RuleId } from "../rules/ids";
 import { RULES } from "../rules/registry";
 import BoardView from "./BoardView";
 import Hud from "./Hud";
@@ -46,5 +47,23 @@ describe("ui", () => {
     // 竖直方向蛇向右行进不点亮任何徽标；吃食路径由集成测覆盖——此处断言侧栏与 HUD 在位
     expect(screen.getByLabelText("rule-wall-death")).toBeTruthy();
     expect(screen.getByLabelText("board")).toBeTruthy();
+  });
+  it("highlights badges whose rule id is in the lit set", () => {
+    // lit 非空路径：命中徽标带 ring 高亮类，未命中徽标保持素色（类名以 RuleSidebar 现实现为准）
+    const { container } = render(
+      <RuleSidebar
+        rules={RULES}
+        lit={new Set<RuleId>(["wall-death", "eat-food"])}
+        onOpen={() => {}}
+      />
+    );
+    const litBadge = container.querySelector('[aria-label="rule-wall-death"]');
+    expect(litBadge?.className).toContain("ring-2");
+    expect(litBadge?.textContent).toContain("触发");
+    const litBadge2 = container.querySelector('[aria-label="rule-eat-food"]');
+    expect(litBadge2?.className).toContain("ring-2");
+    const dimBadge = container.querySelector('[aria-label="rule-board"]');
+    expect(dimBadge?.className).not.toContain("ring-2");
+    expect(dimBadge?.textContent).not.toContain("触发");
   });
 });

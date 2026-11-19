@@ -40,7 +40,9 @@ export default function App() {
   const [best, setBest] = useState<number>(() => loadBest());
   const queueRef = useRef<Dir[]>([]);
   const stateRef = useRef(state);
-  const litTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  // per-rule timer map：每 ruleId 至多一个句柄（新触发重置该 rule 的 timer，到期/清理即删），
+  // 同 rule 窗口内二次触发不会因首个 timer 提前到期而熄灭，长局也不会句柄缓增。
+  const litTimersRef = useRef<Map<RuleId, ReturnType<typeof setTimeout>>>(new Map());
 
   useEffect(() => {
     stateRef.current = state;
@@ -50,10 +52,15 @@ export default function App() {
   useEffect(() => {
     const timers = litTimersRef;
     return () => {
-      for (const t of timers.current) clearTimeout(t);
-      timers.current = [];
+      for (const t of timers.current.values()) clearTimeout(t);
+      timers.current.clear();
     };
   }, []);
+
+  const clearLitTimers = () => {
+    for (const t of litTimersRef.current.values()) clearTimeout(t);
+    litTimersRef.current.clear();
+  };
 
   const light = (ids: RuleId[]) => {
     if (ids.length === 0) return;
@@ -62,14 +69,20 @@ export default function App() {
       for (const id of ids) next.add(id);
       return next;
     });
-    const t = setTimeout(() => {
-      setLit((prev) => {
-        const next = new Set(prev);
-        for (const id of ids) next.delete(id);
-        return next;
-      });
-    }, LIT_MS);
-    litTimersRef.current.push(t);
+    const timers = litTimersRef.current;
+    for (const id of ids) {
+      const prev = timers.get(id);
+      if (prev !== undefined) clearTimeout(prev);
+      const t = setTimeout(() => {
+        timers.delete(id);
+        setLit((p) => {
+          const next = new Set(p);
+          next.delete(id);
+          return next;
+        });
+      }, LIT_MS);
+      timers.set(id, t);
+    }
   };
 
   // 主循环：playing 才排下一 tick；死亡 tick 结束后终局结算（含破纪录点亮 best-score）
@@ -99,7 +112,8 @@ export default function App() {
   // 键盘：方向键/WASD 入 ref 队列（规则同 engine.queueDir），Space 在终局屏重开
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      const dir = KEY_DIRS[e.key];
+      // 单字符键统一小写匹配，Shift/大写锁定下的 W/A/S/D 也能转向
+      const dir = KEY_DIRS[e.key] ?? KEY_DIRS[e.key.toLowerCase()];
       if (dir) {
         e.preventDefault();
         const q = queueRef.current;
@@ -111,6 +125,7 @@ export default function App() {
         e.preventDefault();
         if (stateRef.current.status === "over") {
           queueRef.current = [];
+          clearLitTimers(); // 重开连 pending 点亮定时器一并清，否则旧 timer 到期会误删新局点亮
           setLit(new Set());
           setState(createGame(newSeed()));
         }
