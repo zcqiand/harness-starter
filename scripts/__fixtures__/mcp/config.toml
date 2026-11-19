@@ -1,0 +1,4 @@
+# codex 风格 MCP 配置示意
+[mcp_servers.docs]
+command = "npx"
+args = ["-y", "some-doc-server"]
