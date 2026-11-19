@@ -4,4 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  test: {
+    reporters: ["default", "./scripts/evidence-reporter.mjs"],
+  },
 });
