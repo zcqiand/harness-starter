@@ -1,0 +1,33 @@
+[
+  {
+    "arm": "prompt",
+    "round": 1,
+    "candidate": "good",
+    "checksTotal": 13,
+    "checksFailed": 0,
+    "failedNames": [],
+    "verdict": "pass"
+  },
+  {
+    "arm": "spec",
+    "round": 2,
+    "candidate": "bad-misses-draw",
+    "checksTotal": 13,
+    "checksFailed": 1,
+    "failedNames": [
+      "draw"
+    ],
+    "verdict": "fail"
+  },
+  {
+    "arm": "prompt",
+    "round": 3,
+    "candidate": "bad-allows-two-winners",
+    "checksTotal": 13,
+    "checksFailed": 1,
+    "failedNames": [
+      "double-winner"
+    ],
+    "verdict": "fail"
+  }
+]
