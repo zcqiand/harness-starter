@@ -1,0 +1,38 @@
+# harness-starter — VPS nginx vhost 模板（agent 家族 web-only 单 upstream 形态）
+# 部署时由 deploy/harness-starter.sh 渲染到 /etc/nginx/sites-available/<domain>：
+#   <domain>                          → hstarter.xiangru.uk（可用 NGINX_DOMAIN 覆盖）
+#   /etc/nginx/ssl/<domain>.crt|.key  → /etc/nginx/ssl/xiangru-uk.{cert,key}（泛域证书）
+# 本容器不终结 TLS——那是 VPS nginx 的职责；web 容器只监听 127.0.0.1:5312。
+# 纯前端无后端：无 /api/ 块。
+#
+# 渲染纪律（2026-09-03 事故）：cert 归一化 sed 规则必须排在 <domain> 之前。
+
+# ---- HTTP → HTTPS ----
+server {
+    listen 80;
+    server_name <domain>;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    # 家族模板语法：http2 走 listen 参数（VPS nginx < 1.25.1 不认独立
+    # `http2 on;` 指令——2026-10-06 expense run 37385091752 首航指纹）
+    listen 443 ssl http2;
+    server_name <domain>;
+
+    ssl_certificate     /etc/nginx/ssl/<domain>.crt;
+    ssl_certificate_key /etc/nginx/ssl/<domain>.key;
+
+    # HSTS（家族统一姿态）
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+    # ---- / → web 静态容器（nginx，host 127.0.0.1:5312）----
+    location / {
+        proxy_pass http://127.0.0.1:5312;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}

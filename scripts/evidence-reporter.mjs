@@ -29,11 +29,21 @@ export default class EvidenceReporter {
     }
     // 未捕获错误（用例之外抛出）同样封锁 allGreen。
     failures += unhandledErrors.length;
-    const commit = execSync("git rev-parse --short HEAD", {
-      cwd: repoRoot,
-    })
-      .toString()
-      .trim();
+    // git 元数据缺失退化：容器构建（node:24-alpine 无 git）、worktree 检出（.git 是
+    // 指向宿主机 gitdir 的指针文件）场景 rev-parse 必失败——回执 commit 退化为 unknown，
+    // 不阻断测试；CI 全量 checkout 自带 git + 全量 .git，仍取真 short SHA。
+    let commit = "unknown";
+    try {
+      commit =
+        execSync("git rev-parse --short HEAD", {
+          cwd: repoRoot,
+          stdio: ["ignore", "pipe", "ignore"],
+        })
+          .toString()
+          .trim() || commit;
+    } catch {
+      // keep fallback
+    }
 
     const receipt = {
       commit,
