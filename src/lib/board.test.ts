@@ -1,16 +1,11 @@
-import { describe, expect, it } from "vitest";
-import { BOARD_COLS, BOARD_ROWS, emptyBoard } from "./board";
+import { describe, it, expect } from "vitest";
+import { BOARD_ROWS, BOARD_COLS, PORTAL_A, PORTAL_B } from "./board";
 
-describe("emptyBoard", () => {
-  it("返回 ROWS×COLS 网格", () => {
-    const board = emptyBoard();
-    expect(board).toHaveLength(BOARD_ROWS);
-    for (const row of board) expect(row).toHaveLength(BOARD_COLS);
-  });
-
-  it("空板全为空格", () => {
-    for (const row of emptyBoard()) {
-      for (const cell of row) expect(cell).toBe(false);
-    }
+describe("board", () => {
+  it("fixes the 20x20 grid and portal pair", () => {
+    expect(BOARD_ROWS).toBe(20);
+    expect(BOARD_COLS).toBe(20);
+    expect(PORTAL_A).toEqual({ x: 2, y: 2 });
+    expect(PORTAL_B).toEqual({ x: 17, y: 17 });
   });
 });
