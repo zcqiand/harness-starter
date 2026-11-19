@@ -10,11 +10,16 @@ const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
 const outPath = join(repoRoot, "evidence", "latest.json");
 
 export default class EvidenceReporter {
-  async onTestRunEnd(testModules, _unhandledErrors, _reason) {
+  async onTestRunEnd(testModules, unhandledErrors, _reason) {
     const files = testModules.length;
     let checks = 0;
     let failures = 0;
     for (const mod of testModules) {
+      // 模块级失败（import/收集失败）可能无可枚举用例，必须单独计入，
+      // 否则红 run 会产 allGreen=true 的假绿回执。
+      if (mod.state() === "failed") {
+        failures += 1;
+      }
       for (const test of mod.children.allTests()) {
         checks += 1;
         if (test.result()?.status === "failed") {
@@ -22,6 +27,8 @@ export default class EvidenceReporter {
         }
       }
     }
+    // 未捕获错误（用例之外抛出）同样封锁 allGreen。
+    failures += unhandledErrors.length;
     const commit = execSync("git rev-parse --short HEAD", {
       cwd: repoRoot,
     })
