@@ -1,4 +1,5 @@
 /** 棋盘纯逻辑模块：20x20 网格常量、传送门对与格子/坐标类型。 */
+// @impl M01.F01.I01 — 网格与传送门常量（function-tree M01.F01）
 
 export type Pos = { x: number; y: number };
 

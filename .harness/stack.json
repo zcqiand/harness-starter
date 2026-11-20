@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "suite_version": "0.6.0",
+  "project": "harness-starter",
+  "stack": "react-ts",
+  "gates": {
+    "L1": {
+      "name": "类型（tsc --noEmit）",
+      "cmd": [
+        "npx",
+        "--no",
+        "--",
+        "tsc",
+        "--noEmit"
+      ],
+      "fix": "补全/修正类型；禁 any、禁放宽 tsconfig。strict 全开，类型错误即红。"
+    },
+    "L4": {
+      "name": "测试（vitest 全量，无 Key/无网可跑）",
+      "cmd": [
+        "npx",
+        "--no",
+        "--",
+        "vitest",
+        "run"
+      ],
+      "fix": "先让测试变绿。改测试前必须先说明理由；规则引擎（engine/board/rng）行为改动须同步核对 docs/specs/snake-advanced.spec.md 条款与 registry 断言锚。"
+    }
+  },
+  "trace_cmd": [
+    "npx",
+    "--no",
+    "--",
+    "vitest",
+    "run"
+  ],
+  "trace_env": {},
+  "source_dirs": [
+    "src"
+  ],
+  "test_dirs": [],
+  "_note_test_dirs": "测试与源码同目录共置（src/**/*.test.ts[x]），目录级排除会误伤源文件，故留空；锚点只挂实现文件，测试文件天然不进 source_index。"
+}

@@ -1,3 +1,4 @@
+// @impl M05.F01.I01 — App 游戏主循环页面（function-tree M05.F01）
 import { useEffect, useRef, useState } from "react";
 import { cellGrid, createGame, queueDir, tick, tickIntervalMs } from "./lib/engine";
 import type { Dir, GameState, RuleEvent } from "./lib/engine";

@@ -1,3 +1,4 @@
+// @impl M05.F01.I02 — BoardView 棋盘渲染（function-tree M05.F01）
 import type { Cell } from "../lib/board";
 
 /** 格型 → 语义类（cell-portal_a 转连字符 cell-portal-a）+ 底色。 */

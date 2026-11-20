@@ -1,3 +1,4 @@
+// @impl M05.F02.I01 — RuleSidebar 规则徽标侧栏（function-tree M05.F02）
 import type { RuleMeta } from "../rules/registry";
 import type { RuleId } from "../rules/ids";
 

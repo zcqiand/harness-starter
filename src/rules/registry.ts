@@ -1,5 +1,6 @@
 import type { RuleId } from "./ids";
 
+// @impl M03.F01.I01 — RULES 规则注册表（function-tree M03.F01）
 export interface RuleMeta {
   id: RuleId;
   title: string;

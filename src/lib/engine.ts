@@ -9,6 +9,8 @@ import {
 import { rngInt } from "./rng";
 import type { RuleId } from "../rules/ids";
 
+// @impl M01.F01.I02 — cellGrid 格网派生；M01.F02.I01 createGame / I02 queueDir / I03 tick / I04 tickIntervalMs（function-tree M01）
+
 export type Dir = "up" | "down" | "left" | "right";
 
 export interface GameState {

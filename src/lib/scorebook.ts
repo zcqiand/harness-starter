@@ -1,4 +1,5 @@
 // S9: 最高分持久化（localStorage）+ 类型守卫 + 内存降级
+// @impl M04.F01.I01 — loadBest/saveBest 存取（function-tree M04.F01）
 const BEST_KEY = "hstarter.snake.best";
 
 // 模块级内存假件：localStorage 不可用时兜底，同会话读写一致

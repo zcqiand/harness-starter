@@ -1,3 +1,4 @@
+// @impl M05.F02.I02 — ProvenancePanel 溯源面板（function-tree M05.F02）
 import type { RuleMeta } from "../rules/registry";
 
 /** 证据回执形状 = evidence/latest.json 七字段（reporter 落盘契约）。 */

@@ -1,3 +1,4 @@
+// @impl M02.F01.I01 rngStep / M02.F01.I02 rngInt — 种子化 RNG（function-tree M02.F01）
 export function rngStep(state: number): [number, number] {
   let t = (state + 0x6d2b79f5) | 0;
   let r = t;
