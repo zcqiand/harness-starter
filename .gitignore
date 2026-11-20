@@ -7,3 +7,6 @@ _work/
 .godot/
 .worktrees/
 .superpowers/
+
+# suite 门禁运行产物
+.state/
